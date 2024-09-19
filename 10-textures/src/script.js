@@ -4,13 +4,11 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
 //Texture
 const loadingManager = new THREE.LoadingManager();
-console.log(loadingManager)
+/*
 loadingManager.onStart = () => {
     console.log('onStart');
 };
-
-/*
-loadingManager.onLoaded = () => {
+loadingManager.onLoad = () => {
     console.log('onloaded');
 };
 loadingManager.onProgress = () => {
@@ -18,16 +16,26 @@ loadingManager.onProgress = () => {
 };
 loadingManager. onError = () => {
     console.log('error');
-};*/
+};
+*/
+const textureLoader = new THREE.TextureLoader(loadingManager);
+const colorTexture = textureLoader.load('/textures/minecraft.png');
 
-const textureLoader = new THREE.TextureLoader();
-const texture = textureLoader.load('textures/door/color.jpg');
-texture.colorSpace = THREE.SRGBColorSpace;
-
+colorTexture.colorSpace = THREE.SRGBColorSpace;
+// colorTexture.repeat.x = 2;
+// colorTexture.repeat.y = 2;
+// colorTexture.wrapS = THREE.RepeatWrapping;
+// colorTexture.wrapT = THREE.RepeatWrapping;
+// colorTexture.offset.x = 0.5;
+// colorTexture.rotation = Math.PI/4;
+// colorTexture.center.x = 0.5;
+// colorTexture.center.y = 0.5;
+colorTexture.generateMipmaps = false; 
+colorTexture.magFilter = THREE.NearestFilter;
 /**
  * Base
  */
-// Canvas
+// Canvasdd
 const canvas = document.querySelector('canvas.webgl');
 
 // Scene
@@ -37,7 +45,7 @@ const scene = new THREE.Scene();
  * Object
  */
 const geometry = new THREE.BoxGeometry(1, 1, 1);
-const material = new THREE.MeshBasicMaterial({ map: texture });
+const material = new THREE.MeshBasicMaterial({ map: colorTexture });
 const mesh = new THREE.Mesh(geometry, material);
 scene.add(mesh);
 
