@@ -10,11 +10,36 @@ const canvas = document.querySelector('canvas.webgl');
 // Scene
 const scene = new THREE.Scene();
 
-//objects
-const material = new THREE.MeshBasicMaterial({ color: 0xffff00, wireframe: true });
+//textures
+const textureLoader = new THREE.TextureLoader();
+const doorColorTexture = textureLoader.load('./textures/door/color.jpg');
+const matcapTexture = textureLoader.load('./textures/matcaps/2.png');
+doorColorTexture.colorSpace = THREE.SRGBColorSpace;
+
+/*
+Objects
+*/
+// const material = new THREE.MeshBasicMaterial({
+    //map: doorColorTexture, 
+    //color: 'red',
+    //transparent: true,
+    //opacity: 0.8,
+    //side: THREE.DoubleSide
+// });
+
+// const material = new THREE.MeshNormalMaterial({ wireframe: true });
+// const material = new THREE.MeshMatcapMaterial({ matcap: matcapTexture });
+// const material = new THREE.MeshDepthMaterial();
+// const material = new THREE.MeshLambertMaterial();
+// const material = new THREE.MeshPhongMaterial({
+//     shininess: 1000,
+//     specular: new THREE.Color(0x1188ff)
+// });
+
+
 const sphere = new THREE.Mesh(
     new THREE.SphereGeometry(0.5, 16, 16), 
-    material
+    material 
 );
 const plane = new THREE.Mesh(
     new THREE.PlaneGeometry(1, 1), 
@@ -28,6 +53,15 @@ scene.add(sphere, plane, torus);
 
 sphere.position.x = -1.5;
 torus.position.x = 1.5;
+
+//Lights
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.1);
+scene.add(ambientLight);
+const pointLight = new THREE.PointLight(0xffffff, 30);
+pointLight.position.x = 2;
+pointLight.position.y = 3;
+pointLight.position.z = 4;
+scene.add(pointLight);
 
 /**
  * Sizes
@@ -84,6 +118,12 @@ const clock = new THREE.Clock();
 const tick = () =>
 {
     const elapsedTime = clock.getElapsedTime();
+    sphere.rotation.y = 0.1 * elapsedTime;
+    plane.rotation.y = 0.1 * elapsedTime;
+    torus.rotation.y= 0.1 * elapsedTime;
+    sphere.rotation.x = -0.15 * elapsedTime;
+    plane.rotation.x = -0.15 * elapsedTime;
+    torus.rotation.x= -0.15 * elapsedTime;
 
     // Update controls
     controls.update();
