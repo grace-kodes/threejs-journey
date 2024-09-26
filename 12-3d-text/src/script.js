@@ -2,14 +2,46 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import GUI from 'lil-gui';
 import { FontLoader } from 'three/examples/jsm/loaders/FontLoader';
+import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry';
 
 /**
  * Fonts
  */
 const fontLoader = new FontLoader();
 fontLoader.load('/fonts/helvetiker_regular.typeface.json', 
-    () => {
-        console.log('font loaded');
+    (font) => {
+        const textGeometry = new TextGeometry(
+            'How Cool',
+            {
+                font: font,
+                size: 0.5,
+                depth: 0.2,
+                curveSegments: 5,
+                bevelEnabled: true,
+                bevelThickness: 0.03,
+                bevelSize: 0,
+                bevelOffset: 0,
+                bevelSegments: 4, 
+                bevelSize: 0.02
+            }
+        );
+        // textGeometry.computeBoundingBox();
+        // console.log(textGeometry.boundingBox);
+        // textGeometry.translate(
+        //     - (textGeometry.boundingBox.max.x - 0.02) * 0.5, 
+        //     - (textGeometry.boundingBox.max.y - 0.02) * 0.5,
+        //     - (textGeometry.boundingBox.max.z - 0.03)* 0.5
+        // )
+        textGeometry.center();
+        const textMaterial = new THREE.MeshMatcapMaterial({ matcap: matcapTexture});
+        const text = new THREE.Mesh(textGeometry, textMaterial);
+        scene.add(text);
+        for (let i = 0; i < 100; i++) {
+            const donutGeometry = new THREE.TorusGeometry(0.3, 0.2, 20, 45);
+            const donutMaterial = new THREE.MeshMatcapMaterial({ matcap: matcapTexture });
+            const donut = new THREE.Mesh(donutGeometry, donutMaterial);
+            scene.add(donut);
+        }
     }
 );
 
@@ -25,20 +57,17 @@ const canvas = document.querySelector('canvas.webgl');
 // Scene
 const scene = new THREE.Scene();
 
+//Axes helper
+// const axesHelper = new THREE.AxesHelper();
+// scene.add(axesHelper);
+
 /**
  * Textures
  */
 const textureLoader = new THREE.TextureLoader();
+const matcapTexture = textureLoader.load('/textures/matcaps/1.png');
+matcapTexture.colorSpace = THREE.SRGBColorSpace;
 
-/**
- * Object
- */
-const cube = new THREE.Mesh(
-    new THREE.BoxGeometry(1, 1, 1),
-    new THREE.MeshBasicMaterial()
-);
-
-scene.add(cube);
 
 /**
  * Sizes
