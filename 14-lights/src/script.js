@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import GUI from 'lil-gui';
+import { RectAreaLightHelper } from 'three/examples/jsm/helpers/RectAreaLightHelper.js';
 
 /**
  * Base
@@ -19,15 +20,40 @@ const scene = new THREE.Scene();
  */
 //ambient light - uniform all around
 const ambientLight = new THREE.AmbientLight(0xffffff, 1);
+scene.add(ambientLight);
 
 //directional light - rays in parallel coming from same direction like the suns
-const directionalLight = new THREE.DirectionalLight(0x00fffc, 0.9);
+const directionalLight = new THREE.DirectionalLight(0x00fffc, 2);
 directionalLight.position.set(1, 0.25, 0);
+scene.add(directionalLight);
 
+//hemisphere light - directly above the scene, fading from sky color to ground color
 const hemisphereLight = new THREE.HemisphereLight(0xff0000, 0x0000ff, 0.9);
-
+scene.add(hemisphereLight);
+//point light - light from a single point in all directions 
 const pointLight = new THREE.PointLight(0xff9000, 1.5);
-scene.add(ambientLight, directionalLight, hemisphereLight, pointLight);
+pointLight.position.set(1, -0.5, 2);
+scene.add(pointLight);
+
+//rect area light - uniform light across from the face of a rectangular plane 
+const rectAreaLight = new THREE.RectAreaLight(0x4e00ff, 6, 2, 1);
+rectAreaLight.position.set(-1.5, 0, 1.5);
+rectAreaLight.lookAt(new THREE.Vector3());
+scene.add(rectAreaLight);
+
+//spoit light like flashlight
+const spotLight = new THREE.SpotLight(0x78ff00, 4.5, 20, Math.PI * 0.1, 0.25, 1);
+spotLight.position.set(0, 2, 3);
+
+scene.add(spotLight, spotLight.target);
+spotLight.target.position.x = -0.75;
+
+//Helpers
+const hemisphereLightHelper = new THREE.HemisphereLightHelper(hemisphereLight, 0.2);
+const spotLightHelper = new THREE.SpotLightHelper(spotLight, 0.2);
+const directionalLightHelper = new THREE.DirectionalLightHelper(directionalLight, 0.2);
+const rectAreaLightHelper = new RectAreaLightHelper(rectAreaLight, 0.2);
+scene.add(spotLightHelper, hemisphereLightHelper, directionalLightHelper, rectAreaLightHelper);
 
 /**
  * Objects
